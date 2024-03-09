@@ -2,7 +2,6 @@ package lk.ijse.springstudentmanagementmvc.service;
 
 import jakarta.transaction.Transactional;
 import lk.ijse.springstudentmanagementmvc.dto.StudentDTO;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,10 +14,9 @@ public class StudentServiceIMPL implements StudentService{
 
     List<StudentDTO> studentDTOS = new ArrayList<>();
     @Override
-    public List<StudentDTO> saveStudent(StudentDTO studentDTO) {
+    public void saveStudent(StudentDTO studentDTO) {
         studentDTOS.add(studentDTO);
         System.out.println(studentDTO);
-        return studentDTOS;
     }
 
     @Override
@@ -47,4 +45,11 @@ public class StudentServiceIMPL implements StudentService{
         }
         return false;
     }
+
+    @Override
+    public boolean updateStudent(StudentDTO studentDTO) {
+        return false;
+    }
+
+
 }

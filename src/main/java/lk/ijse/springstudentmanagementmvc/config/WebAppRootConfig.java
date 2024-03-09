@@ -1,6 +1,7 @@
 package lk.ijse.springstudentmanagementmvc.config;
 
 import jakarta.persistence.EntityManagerFactory;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -14,14 +15,21 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.sql.DataSource;
 
 @ComponentScan(basePackages = "lk.ijse.springstudentmanagementmvc")
 @Configuration
-@EnableJpaRepositories
+@EnableJpaRepositories("lk.ijse.springstudentmanagementmvc")
+@EnableTransactionManagement
+@EnableWebMvc
 public class WebAppRootConfig {
 
+    @Bean
+    ModelMapper modelMapper(){
+        return new ModelMapper();
+    }
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dmds = new DriverManagerDataSource();
