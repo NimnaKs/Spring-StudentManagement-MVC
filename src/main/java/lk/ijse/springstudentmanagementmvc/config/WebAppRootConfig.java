@@ -20,14 +20,13 @@ import javax.sql.DataSource;
 @ComponentScan(basePackages = "lk.ijse.springstudentmanagementmvc")
 @Configuration
 @EnableJpaRepositories
-@EnableTransactionManagement
 public class WebAppRootConfig {
 
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dmds = new DriverManagerDataSource();
         dmds.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dmds.setUrl("jdbc:mysql://localhost:3306/StudentManagementDB?createDatabaseIfNotExists=true");
+        dmds.setUrl("jdbc:mysql://localhost:3306/StudentManagementDB?createDatabaseIfNotExist=true");
         dmds.setUsername("root");
         dmds.setPassword("ijse@200108");
         return dmds;
@@ -41,7 +40,7 @@ public class WebAppRootConfig {
 
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(vendorAdapter);
-        factory.setPackagesToScan("com.acme.domain");
+        factory.setPackagesToScan("lk.ijse.springstudentmanagementmvc.entity");
         factory.setDataSource(dataSource());
         return factory;
     }

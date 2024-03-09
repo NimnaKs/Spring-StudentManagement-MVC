@@ -1,5 +1,6 @@
 package lk.ijse.springstudentmanagementmvc.service;
 
+import jakarta.transaction.Transactional;
 import lk.ijse.springstudentmanagementmvc.dto.StudentDTO;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 
 @Service
+@Transactional
 public class StudentServiceIMPL implements StudentService{
 
     List<StudentDTO> studentDTOS = new ArrayList<>();
