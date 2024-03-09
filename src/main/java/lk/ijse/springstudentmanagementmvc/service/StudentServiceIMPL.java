@@ -1,7 +1,11 @@
 package lk.ijse.springstudentmanagementmvc.service;
 
 import jakarta.transaction.Transactional;
+import lk.ijse.springstudentmanagementmvc.conversion.ConversionData;
 import lk.ijse.springstudentmanagementmvc.dto.StudentDTO;
+import lk.ijse.springstudentmanagementmvc.entity.StudentEntity;
+import lk.ijse.springstudentmanagementmvc.repository.StudentDao;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -11,38 +15,32 @@ import java.util.List;
 @Service
 @Transactional
 public class StudentServiceIMPL implements StudentService{
+    
+    @Autowired
+    private StudentDao studentDao;
+    
+    @Autowired
+    private ConversionData convert;
 
-    List<StudentDTO> studentDTOS = new ArrayList<>();
     @Override
-    public void saveStudent(StudentDTO studentDTO) {
-        studentDTOS.add(studentDTO);
-        System.out.println(studentDTO);
+    public boolean saveStudent(StudentDTO studentDTO) {
+        StudentEntity studentEntity = convert.convertToStudentEntity(studentDTO);
+        studentDao.save(studentEntity)
+        return false;
     }
 
     @Override
     public StudentDTO getStudent(String id) {
-        for (StudentDTO selectedStudent:studentDTOS) {
-            if(selectedStudent.getId().equals(id)){
-                return selectedStudent;
-            }
-        }
         return null;
     }
 
     @Override
     public List<StudentDTO> getAllStudents() {
-        return studentDTOS;
+        return null;
     }
 
     @Override
     public boolean deleteStudent(String id) {
-        Iterator<StudentDTO> iterator = studentDTOS.iterator();
-        while (iterator.hasNext()){
-            if(iterator.next().getId().equals(id)){
-                iterator.remove();
-                return true;
-            }
-        }
         return false;
     }
 
@@ -50,6 +48,4 @@ public class StudentServiceIMPL implements StudentService{
     public boolean updateStudent(StudentDTO studentDTO) {
         return false;
     }
-
-
 }
