@@ -58,12 +58,19 @@ public class Student {
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping(value = "/{id:^S\\d{3}$}")
-    public ResponseEntity<String> deleteStudent(@PathVariable ("id") String id){
-        if (studentService.deleteStudent(id)) {
-            return ResponseEntity.ok("Successfully Deleted Student With Id : "+id);
-        } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Delete Unsuccessful !");
+    @DeleteMapping(value = "/{id}")
+    public void deleteStudent(@PathVariable ("id") String id){
+        studentService.deleteStudent(id);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void updateStudent(@Valid @RequestBody StudentDTO studentDTO, Errors errors) {
+        if (errors.hasErrors()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    errors.getAllErrors().get(0).getDefaultMessage());
+        }else{
+            studentService.updateStudent(studentDTO);
         }
     }
 }

@@ -11,7 +11,7 @@ public interface StudentService {
 
     List<StudentDTO> getAllStudents();
 
-    boolean deleteStudent(String id);
+    void deleteStudent(String id);
 
-    boolean updateStudent(StudentDTO studentDTO);
+    void updateStudent(StudentDTO studentDTO);
 }

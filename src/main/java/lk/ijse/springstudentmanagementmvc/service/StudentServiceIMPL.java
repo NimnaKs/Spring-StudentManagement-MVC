@@ -10,8 +10,6 @@ import lk.ijse.springstudentmanagementmvc.util.UtilMatters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,18 +26,13 @@ public class StudentServiceIMPL implements StudentService{
     @Override
     public boolean saveStudent(StudentDTO studentDTO) {
         studentDTO.setId(UtilMatters.generateId());
-        StudentEntity studentEntity = convert.convertToStudentEntity(studentDTO);
-        StudentEntity saveEntity = studentDao.save(studentEntity);
-        return saveEntity.getId().equals(studentDTO.getId());
+        return studentDao.save(convert.convertToStudentEntity(studentDTO)).getId().equals(studentDTO.getId());
     }
 
     @Override
     public StudentDTO getStudent(String id) {
-        if (studentDao.existsById(id)){
-            return convert.convertToStudentDTO(studentDao.getReferenceById(id));
-        }else{
-            throw new NotFoundException("Student Not Found");
-        }
+        if (!studentDao.existsById(id)){throw new NotFoundException("Student Not Found");}
+        return convert.convertToStudentDTO(studentDao.getReferenceById(id));
     }
 
     @Override
@@ -48,19 +41,17 @@ public class StudentServiceIMPL implements StudentService{
     }
 
     @Override
-    public boolean deleteStudent(String id) {
-        if (studentDao.existsById(id)) {
-            studentDao.deleteById(id);
-            return !studentDao.existsById(id);
-        }else{
-            throw new NotFoundException("Student Id Not Exists");
-        }
+    public void deleteStudent(String id) {
+        if (!studentDao.existsById(id)) { throw new NotFoundException("Student Id Not Exists");}
+        studentDao.deleteById(id);
     }
 
     @Override
-    public boolean updateStudent(StudentDTO studentDTO) {
-        StudentEntity studentEntity = convert.convertToStudentEntity(studentDTO);
-        studentDao.flush();
-        return true;
+    public void updateStudent(StudentDTO studentDTO) {
+        Optional<StudentEntity> tmpStudent = studentDao.findById(studentDTO.getId());
+        if (tmpStudent.isEmpty()) throw new NotFoundException("Student Not Found");
+        tmpStudent.get().setFirstName(studentDTO.getFirstName());
+        tmpStudent.get().setLastName(studentDTO.getLastName());
+        tmpStudent.get().setLevel(studentDTO.getLevel());
     }
 }
