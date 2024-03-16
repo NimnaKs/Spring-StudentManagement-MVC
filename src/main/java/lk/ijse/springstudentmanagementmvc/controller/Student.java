@@ -31,45 +31,39 @@ public class Student {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void saveStudent(@Valid @RequestBody StudentDTO studentDTO, Errors errors){
-        if(errors.hasFieldErrors()){
+    public ResponseEntity<String> saveStudent(@Valid @RequestBody StudentDTO studentDTO, Errors errors) {
+        if (errors.hasFieldErrors()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     errors.getFieldErrors().get(0).getDefaultMessage());
         }
-        studentService.saveStudent(studentDTO);
+
+        if (studentService.saveStudent(studentDTO)) {
+            return ResponseEntity.ok("Successfully Saved");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Save Unsuccessful !");
+        }
     }
 
     @GetMapping(value = "/{id}",produces = "application/json")
     public ResponseEntity</*Map<String,Object>*/StudentDTO> getStudent(@PathVariable ("id") String id){
         StudentDTO selectedStudent = studentService.getStudent(id);
         System.out.println(selectedStudent);
-        /*Map<String,Object> response = new HashMap<>();
-        if (student != null) {
-            response.put("message", "Student Found");
-            response.put("student", student);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } else {
-            response.put("message", "Student Not Found");
-            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-        }*/
-
-        return selectedStudent != null ? ResponseEntity.ok(selectedStudent) : ResponseEntity.noContent().build();
+        return selectedStudent != null ? ResponseEntity.ok(selectedStudent) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @GetMapping(produces = "application/json")
-    public void getAllStudent(){
+    public ResponseEntity</*Map<String,Object>*/List<StudentDTO>> getAllStudent(){
         List<StudentDTO> allStudents = studentService.getAllStudents();
-        System.out.println(allStudents);
+        return new ResponseEntity<>(allStudents, HttpStatus.OK);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(value = "/{id:^S\\d{3}$}")
-    public void deleteStudent(@PathVariable ("id") String id){
-        boolean isDeleted = studentService.deleteStudent(id);
-        if(isDeleted) {
-            System.out.println("Student " + id + " is deleted.");
-        }else{
-            System.out.println("Delete unsuccessful !");
+    public ResponseEntity<String> deleteStudent(@PathVariable ("id") String id){
+        if (studentService.deleteStudent(id)) {
+            return ResponseEntity.ok("Successfully Deleted Student With Id : "+id);
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Delete Unsuccessful !");
         }
     }
 }

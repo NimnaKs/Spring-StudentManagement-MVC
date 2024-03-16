@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class StudentDTO implements SuperDTO{
-    @NotNull(message = "Id cannot be null")
+//    @NotNull(message = "Id cannot be null")
     private String id;
     @NotNull(message = "First Name cannot be null")
     private String firstName;

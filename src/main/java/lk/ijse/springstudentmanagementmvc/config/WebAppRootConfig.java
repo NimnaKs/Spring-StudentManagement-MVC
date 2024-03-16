@@ -58,5 +58,6 @@ public class WebAppRootConfig {
         JpaTransactionManager txManager = new JpaTransactionManager();
         txManager.setEntityManagerFactory(entityManagerFactory);
         return txManager;
+        //Acid Concept - Data Commit and If error happens rollback it.
     }
 }
