@@ -24,9 +24,9 @@ public class StudentServiceIMPL implements StudentService{
     private ConversionData convert;
 
     @Override
-    public boolean saveStudent(StudentDTO studentDTO) {
+    public void saveStudent(StudentDTO studentDTO) {
         studentDTO.setId(UtilMatters.generateId());
-        return studentDao.save(convert.convertToStudentEntity(studentDTO)).getId().equals(studentDTO.getId());
+        studentDao.save(convert.convertToStudentEntity(studentDTO));
     }
 
     @Override
@@ -47,11 +47,12 @@ public class StudentServiceIMPL implements StudentService{
     }
 
     @Override
-    public void updateStudent(StudentDTO studentDTO) {
-        Optional<StudentEntity> tmpStudent = studentDao.findById(studentDTO.getId());
+    public void updateStudent(String id , StudentDTO studentDTO) {
+        Optional<StudentEntity> tmpStudent = studentDao.findById(id);
         if (tmpStudent.isEmpty()) throw new NotFoundException("Student Not Found");
         tmpStudent.get().setFirstName(studentDTO.getFirstName());
         tmpStudent.get().setLastName(studentDTO.getLastName());
         tmpStudent.get().setLevel(studentDTO.getLevel());
+        tmpStudent.get().setProPic(studentDTO.getProPic());
     }
 }

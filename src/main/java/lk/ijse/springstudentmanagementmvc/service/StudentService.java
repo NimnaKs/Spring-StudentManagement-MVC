@@ -5,7 +5,7 @@ import lk.ijse.springstudentmanagementmvc.dto.StudentDTO;
 import java.util.List;
 
 public interface StudentService {
-    boolean saveStudent(StudentDTO studentDTO);
+    void saveStudent(StudentDTO studentDTO);
 
     StudentDTO getStudent(String id);
 
@@ -13,5 +13,5 @@ public interface StudentService {
 
     void deleteStudent(String id);
 
-    void updateStudent(StudentDTO studentDTO);
+    void updateStudent(String id , StudentDTO studentDTO);
 }

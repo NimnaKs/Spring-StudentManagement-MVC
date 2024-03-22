@@ -1,6 +1,7 @@
 package lk.ijse.springstudentmanagementmvc.config;
 
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.servlet.annotation.MultipartConfig;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -24,6 +25,7 @@ import javax.sql.DataSource;
 @EnableJpaRepositories("lk.ijse.springstudentmanagementmvc")
 @EnableTransactionManagement
 @EnableWebMvc
+@MultipartConfig
 public class WebAppRootConfig {
 
     @Bean

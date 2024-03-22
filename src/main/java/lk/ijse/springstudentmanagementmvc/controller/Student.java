@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lk.ijse.springstudentmanagementmvc.dto.StudentDTO;
 import lk.ijse.springstudentmanagementmvc.service.StudentService;
 import lk.ijse.springstudentmanagementmvc.service.StudentServiceIMPL;
+import lk.ijse.springstudentmanagementmvc.util.UtilMatters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,7 +23,7 @@ import java.util.Map;
 public class Student {
 
     @Autowired
-    StudentService studentService=new StudentServiceIMPL();
+    StudentService studentService;
 
     @GetMapping("/health")
     public String healthCheckStudent(){
@@ -30,18 +31,29 @@ public class Student {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> saveStudent(@Valid @RequestBody StudentDTO studentDTO, Errors errors) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void saveStudent(@Valid
+                                @RequestPart ("firstName") String firstName,
+                                @RequestPart ("lastName") String lastName,
+                                @RequestPart ("level") String level,
+                                @RequestPart ("proPic") String proPic,
+                                Errors errors) {
         if (errors.hasFieldErrors()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     errors.getFieldErrors().get(0).getDefaultMessage());
         }
 
-        if (studentService.saveStudent(studentDTO)) {
-            return ResponseEntity.ok("Successfully Saved");
-        } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Save Unsuccessful !");
-        }
+        //Build Base64 image
+        String base64Propic = UtilMatters.convertBase64(proPic);
+
+        StudentDTO studentDTO = new StudentDTO();
+        studentDTO.setFirstName(firstName);
+        studentDTO.setLastName(lastName);
+        studentDTO.setLevel(level);
+        studentDTO.setProPic(base64Propic);
+
+        studentService.saveStudent(studentDTO);
+
     }
 
     @GetMapping(value = "/{id}",produces = "application/json")
@@ -64,13 +76,22 @@ public class Student {
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void updateStudent(@Valid @RequestBody StudentDTO studentDTO, Errors errors) {
-        if (errors.hasErrors()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    errors.getAllErrors().get(0).getDefaultMessage());
-        }else{
-            studentService.updateStudent(studentDTO);
-        }
+    @PutMapping(value = "/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void updateStudent(@PathVariable ("id") String id,@Valid
+                                  @RequestPart ("firstName") String firstName,
+                                  @RequestPart ("lastName") String lastName,
+                                  @RequestPart ("level") String level,
+                                  @RequestPart ("proPic") String proPic,
+                                  Errors errors) {
+        String base64UpdatePropic = UtilMatters.convertBase64(proPic);
+
+        StudentDTO studentDTO = new StudentDTO();
+        studentDTO.setFirstName(firstName);
+        studentDTO.setLastName(lastName);
+        studentDTO.setLevel(level);
+        studentDTO.setProPic(base64UpdatePropic);
+
+        studentService.updateStudent(id , studentDTO);
+
     }
 }
